@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mentor Clínico — Instituto Saber Consciente</title>
+  <meta name="description" content="Assistente para alunos do Terapeuta Holístico Esotérico: do acolhimento à recomendação técnica, com foco em Psicanálise e integração de abordagens.">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Libs para PDF sem cabeçalho/rodapé do navegador -->
+  <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="container">
+    <h1 class="app-title">Mentor Clínico <span>• Psicanálise & Integrações</span></h1>
+    <p class="app-subtitle">Para alunos do <strong>Instituto Saber Consciente</strong> — atendimento completo, ético e preciso.</p>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Ficha de Anamnese</h2>
+      <p class="muted">Preencha os dados do paciente e descreva as queixas principais. O plano virá cirurgicamente alinhado à Psicanálise, com complementos pertinentes.</p>
+      <form id="anamneseForm" autocomplete="off">
+        <div class="grid">
+          <label class="field">
+            <span>Nome do paciente</span>
+            <input type="text" name="nome" placeholder="Ex.: Maria A." required />
+          </label>
+          <label class="field">
+            <span>Idade</span>
+            <input type="number" name="idade" min="1" max="120" placeholder="Ex.: 34" required />
+          </label>
+        </div>
+        <div class="grid">
+          <label class="field">
+            <span>Tempo da queixa (aprox.)</span>
+            <select name="tempo">
+              <option value="">Selecione…</option>
+              <option value="aguda">Aguda (dias/semanas)</option>
+              <option value="subaguda">Subaguda (1–6 meses)</option>
+              <option value="cronica">Crônica (&gt; 6 meses)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Intensidade percebida</span>
+            <select name="intensidade">
+              <option value="">Selecione…</option>
+              <option value="leve">Leve</option>
+              <option value="moderada">Moderada</option>
+              <option value="grave">Grave</option>
+            </select>
+          </label>
+        </div>
+        <label class="field">
+          <span>Queixas principais (descreva em frases curtas)</span>
+          <textarea name="queixas" rows="6" placeholder="Ex.: ansiedade com palpitação, insônia, pensamentos repetitivos, medo de abandono, conflitos familiares, compulsão alimentar…" required></textarea>
+        </label>
+        <details class="details">
+          <summary>Campos opcionais (afinamento do plano)</summary>
+          <div class="grid">
+            <label class="field">
+              <span>Áreas afetadas</span>
+              <select name="areas" multiple>
+                <option>Humor/Ansiedade</option>
+                <option>Relacionamentos</option>
+                <option>Autoestima/Identidade</option>
+                <option>Trabalho/Produtividade</option>
+                <option>Espiritualidade/Sentido</option>
+                <option>Corpo/Sintomas (psicossomática)</option>
+                <option>Infância/Desenvolvimento</option>
+                <option>Sexualidade</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Alertas/Sinais de risco</span>
+              <input type="text" name="riscos" placeholder="Ex.: ideação suicida, automutilação, abuso atual, psicose, risco médico…" />
+            </label>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button type="submit" class="btn primary">Gerar Plano</button>
+          <button type="reset" class="btn">Limpar</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="resultadoSection" class="card hidden">
+      <div class="result-actions">
+        <button id="btnPdf" class="btn">Gerar PDF (sem rodapé do navegador)</button>
+        <button id="btnCopiar" class="btn">Copiar Resumo</button>
+        <button id="btnNova" class="btn">Nova Avaliação</button>
+      </div>
+      <div id="resultado" class="resultado"></div>
+    </section>
+
+    <section class="card note">
+      <h3>Princípios Clínicos & Alinhamento</h3>
+      <ul>
+        <li><strong>Foco primário:</strong> Psicanálise (escuta, associação livre, transferência, interpretação, manejo de resistências).</li>
+        <li><strong>Integrações criteriosas:</strong> ACT, MBCT, Logoterapia, MCC, Mentalização, Sistêmica, Psicossomática, etc., conforme a queixa.</li>
+        <li><strong>Postura:</strong> ética, empática, sem rótulos precipitados. Hipóteses são <em>clínicas</em>, não diagnósticas.</li>
+        <li><strong>Segurança:</strong> sinais de risco exigem encaminhamento imediato a equipe multiprofissional.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="container footer">
+    <small>© <span id="ano"></span> Instituto Saber Consciente — Ferramenta educacional para alunos. Não substitui avaliação médica/psiquiátrica.</small>
+  </footer>
+</body>
+</html>
