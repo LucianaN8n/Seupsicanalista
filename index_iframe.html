@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mentor Clínico — Psicanálise (Hotmart)</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="container" style="display:none">
+    <h1 class="app-title">Mentor Clínico <span>• Psicanálise</span></h1>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Ficha de Anamnese</h2>
+      <form id="anamneseForm" autocomplete="off">
+        <div class="grid">
+          <label class="field">
+            <span>Nome do paciente</span>
+            <input type="text" name="nome" required />
+          </label>
+          <label class="field">
+            <span>Idade</span>
+            <input type="number" name="idade" min="1" max="120" required />
+          </label>
+        </div>
+        <div class="grid">
+          <label class="field">
+            <span>Tempo da queixa</span>
+            <select name="tempo">
+              <option value="">Selecione…</option>
+              <option value="aguda">Aguda (dias/semanas)</option>
+              <option value="subaguda">Subaguda (1–6 meses)</option>
+              <option value="cronica">Crônica (&gt; 6 meses)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Intensidade</span>
+            <select name="intensidade">
+              <option value="">Selecione…</option>
+              <option value="leve">Leve</option>
+              <option value="moderada">Moderada</option>
+              <option value="grave">Grave</option>
+            </select>
+          </label>
+        </div>
+        <label class="field">
+          <span>Queixas principais</span>
+          <textarea name="queixas" rows="6" required></textarea>
+        </label>
+        <details class="details">
+          <summary>Campos opcionais</summary>
+          <div class="grid">
+            <label class="field">
+              <span>Áreas afetadas</span>
+              <select name="areas" multiple>
+                <option>Humor/Ansiedade</option>
+                <option>Relacionamentos</option>
+                <option>Autoestima/Identidade</option>
+                <option>Trabalho/Produtividade</option>
+                <option>Espiritualidade/Sentido</option>
+                <option>Corpo/Sintomas (psicossomática)</option>
+                <option>Infância/Desenvolvimento</option>
+                <option>Sexualidade</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Alertas/Sinais de risco</span>
+              <input type="text" name="riscos" placeholder="Ex.: ideação suicida, automutilação, abuso atual, psicose, risco médico…" />
+            </label>
+          </div>
+        </details>
+
+        <details class="details">
+          <summary>Escalas (monitoramento — não diagnóstico)</summary>
+          <div class="scales">
+            <fieldset class="scale">
+              <legend>GAD-7 — última semana</legend>
+              <p class="muted">0 = Nunca | 1 = Vários dias | 2 = Mais da metade | 3 = Quase todos os dias</p>
+              <div class="scale-grid" data-scale="gad7"></div>
+              <div class="scale-result" id="gad7Result"></div>
+            </fieldset>
+            <fieldset class="scale">
+              <legend>PHQ-9 — últimas 2 semanas</legend>
+              <p class="muted">0 = Nunca | 1 = Vários dias | 2 = Mais da metade | 3 = Quase todos os dias</p>
+              <div class="scale-grid" data-scale="phq9"></div>
+              <div class="scale-result" id="phq9Result"></div>
+            </fieldset>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button type="button" id="btnPerguntar" class="btn">Perguntar agora</button>
+          <button type="submit" class="btn primary">Gerar Plano</button>
+          <button type="reset" class="btn">Limpar</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="resultadoSection" class="card hidden">
+      <div class="result-actions">
+        <button id="btnPdf" class="btn">Gerar PDF</button>
+        <button id="btnCopiar" class="btn">Copiar Resumo</button>
+        <button id="btnNova" class="btn">Nova Avaliação</button>
+      </div>
+      <div id="resultado" class="resultado"></div>
+    </section>
+  </main>
+
+  <footer class="container footer" style="display:none">
+    <small>© <span id="ano"></span> Instituto Saber Consciente</small>
+  </footer>
+</body>
+</html>
