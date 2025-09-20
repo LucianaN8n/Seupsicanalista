@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Redefinir senha</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body class="container">
+  <h2>Redefinir senha</h2>
+  <div class="card">
+    <div class="grid">
+      <label class="field"><span>Nova senha</span><input id="newPass" type="password"/></label>
+      <label class="field"><span>Confirmar</span><input id="newPass2" type="password"/></label>
+    </div>
+    <div class="actions"><button id="btnReset" class="btn primary">Salvar nova senha</button></div>
+    <pre id="out" class="pre" style="display:none"></pre>
+  </div>
+<script>
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get('email')||'';
+  const id = params.get('id')||'';
+  const token = params.get('token')||'';
+  document.getElementById('btnReset').addEventListener('click', async ()=>{
+    const p1 = document.getElementById('newPass').value.trim();
+    const p2 = document.getElementById('newPass2').value.trim();
+    if(!p1 || p1.length<6) return alert('Senha muito curta.');
+    if(p1!==p2) return alert('Senhas não coincidem.');
+    const r = await fetch('/.netlify/functions/auth_reset_confirm', { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({ email, id, token, new_password: p1 }) });
+    if(r.ok){ alert('Senha redefinida. Agora faça login.'); window.location.href='/'; } else { alert('Link inválido ou expirado.'); }
+  });
+})();
+</script>
+</body>
+</html>

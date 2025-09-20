@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Login concluído</title>
+<style>body{font-family:system-ui,Roboto,sans-serif;padding:2rem}</style>
+</head>
+<body>
+<script>
+  (function(){
+    const h = new URL(window.location.href).hash.slice(1);
+    const p = new URLSearchParams(h);
+    const token = p.get('token'), email = p.get('email');
+    if(token){ localStorage.setItem('app_token', token); }
+    window.location.replace('/');
+  })();
+</script>
+<p>Concluindo login...</p>
+</body>
+</html>
