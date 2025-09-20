@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mentor Clínico — Psicanálise</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+<header class="container header">
+  <h1 class="app-title">Mentor Clínico <span>• Psicanálise</span></h1>
+  <div class="auth">
+    <span id="userEmail" class="user-email muted">Não conectado</span>
+    <button id="btnLogout" class="btn small hidden">Sair</button>
+    <span id="badgeLimite" class="badge soft">0/3 hoje</span>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="card">
+    <h2>Login</h2>
+    <div class="grid">
+      <label class="field"><span>E-mail</span><input id="authEmail" type="email" placeholder="voce@exemplo.com"></label>
+      <label class="field"><span>Senha</span><input id="authPass" type="password" placeholder="mínimo 6 caracteres"></label>
+    </div>
+    <div class="actions">
+      <button id="btnDoLogin" class="btn primary">Entrar</button>
+      <button id="btnDoRegister" class="btn">Criar conta</button>
+      <button id="btnGoogle" class="btn">Entrar com Google</button>
+      <button id="btnForgot" class="btn">Esqueci a senha</button>
+    </div>
+    <small class="muted">Senhas com hash <b>scrypt</b>. OAuth Google disponível. Tokens assinados (HMAC-SHA256).</small>
+  </section>
+
+  <section class="card">
+    <h2>Ficha de Anamnese</h2>
+    <form id="anamneseForm" autocomplete="off">
+      <div class="grid">
+        <label class="field"><span>Nome do paciente</span><input type="text" name="nome" required /></label>
+        <label class="field"><span>Idade</span><input type="number" name="idade" min="1" max="120" required /></label>
+      </div>
+      <div class="grid">
+        <label class="field"><span>Tempo da queixa</span>
+          <select name="tempo"><option value="">Selecione…</option><option value="aguda">Aguda</option><option value="subaguda">Subaguda</option><option value="cronica">Crônica</option></select></label>
+        <label class="field"><span>Intensidade</span>
+          <select name="intensidade"><option value="">Selecione…</option><option value="leve">Leve</option><option value="moderada">Moderada</option><option value="grave">Grave</option></select></label>
+      </div>
+      <label class="field"><span>Queixas principais</span><textarea name="queixas" id="queixas" rows="6" required placeholder="Descreva as queixas em cenas específicas..."></textarea></label>
+
+      <div id="perguntasCard" class="card subtle hidden">
+        <div class="card-head"><h3>Perguntas sugeridas</h3><small class="helper">Geradas das queixas</small></div>
+        <ol id="listaPerguntas" class="list-tight"></ol>
+        <div class="obs-wrap">
+          <label class="field"><span>Observações do terapeuta</span><textarea id="observacoes" rows="4" placeholder="Anote respostas aqui, se quiser."></textarea></label>
+          <label class="chk"><input type="checkbox" id="obsIncluirPdf" /> Incluir observações no relatório/PDF</label>
+        </div>
+      </div>
+
+      <details class="details">
+        <summary>Escalas (monitoramento — não diagnóstico)</summary>
+        <div class="scales">
+          <fieldset class="scale"><legend>GAD-7</legend><div class="scale-grid" data-scale="gad7"></div><div class="scale-result" id="gad7Result"></div></fieldset>
+          <fieldset class="scale"><legend>PHQ-9</legend><div class="scale-grid" data-scale="phq9"></div><div class="scale-result" id="phq9Result"></div></fieldset>
+        </div>
+      </details>
+
+      <div class="actions">
+        <button type="submit" class="btn primary" id="btnGerar">Gerar Plano</button>
+        <button type="reset" class="btn" id="btnLimpar">Limpar</button>
+      </div>
+    </form>
+  </section>
+
+  <section id="resultadoSection" class="card hidden">
+    <div class="result-actions">
+      <button id="btnPdfPaciente" class="btn">PDF — Paciente</button>
+      <button id="btnPdfSupervisao" class="btn">PDF — Supervisão</button>
+      <button id="btnCopiar" class="btn">Copiar Resumo</button>
+      <button id="btnNova" class="btn">Nova Avaliação</button>
+    </div>
+    <div id="resultado" class="resultado"></div>
+  </section>
+
+  <section class="card" id="conta">
+    <h2>Minha Conta</h2>
+    <div class="grid">
+      <div class="field"><span>Plano atual</span><div><strong id="planoNome">—</strong> <small id="planoLimites" class="muted"></small></div></div>
+      <div class="field"><span>Uso de hoje</span><div><strong id="usoHoje">0</strong> / <span id="limiteDia">0</span></div></div>
+      <div class="field"><span>Uso no mês</span><div><strong id="usoMes">0</strong> de <strong id="limiteMes">0</strong></div></div>
+    </div>
+    <div class="actions">
+      <button id="btnCSV" class="btn">Exportar uso (CSV)</button>
+      <button id="btnUpgrade" class="btn primary">Ativar PRO (20/dia)</button>
+      <button id="btnDowngrade" class="btn">Voltar ao Básico (3/dia)</button>
+    </div>
+  </section>
+
+  <section class="card" id="adminPanel" style="display:none">
+    <h2>Painel Admin</h2>
+    <div class="grid">
+      <div class="field"><span>Período</span><input id="adminMes" type="month" /></div>
+      <div class="field"><span>Alterar plano (por e-mail)</span>
+        <div class="flex"><input type="email" id="adminEmail" placeholder="aluno@exemplo.com" />
+        <select id="adminPlano"><option value="basic">Básico</option><option value="pro">Pro</option></select>
+        <button id="adminSetPlan" class="btn primary">Aplicar</button></div>
+      </div>
+      <div class="field"><span>Uso do mês (aluno)</span>
+        <div class="flex"><input type="email" id="adminEmailUsage" placeholder="aluno@exemplo.com" />
+        <button id="adminGetUsage" class="btn">Ler uso</button>
+        <button id="adminCSV" class="btn">Exportar CSV</button></div>
+        <pre id="adminUsageOut" class="pre" style="display:none"></pre>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="container footer">
+  <small>© <span id="ano"></span> Instituto Saber Consciente</small>
+</footer>
+</body>
+</html>
