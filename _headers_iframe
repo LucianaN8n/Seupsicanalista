@@ -1,7 +1,0 @@
-/*
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: no-referrer-when-downgrade
-  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
-  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors https://*.hotmart.com https://*.hotmart.app https://*.club.hotmart.com; base-uri 'self'; form-action 'self';
